@@ -1,18 +1,19 @@
 import path from 'path';
 import { SingleEntryPlugin } from 'webpack';
 import WebWorkerTemplatePlugin from 'webpack/lib/webworker/WebWorkerTemplatePlugin';
+import { getOutputFileName } from './utils';
 
 export default function loader() {};
 
 export function pitch(workerFilePath: string) {
-  const filename = path.basename(workerFilePath);
-  const chunkFilename = '[id].worker.js';
+  const outputFileName = getOutputFileName(workerFilePath);
+  const outputChunkFileName = '[id].' + outputFileName;
 
   const compiler = this._compilation.createChildCompiler(
     `next-worker ${workerFilePath}`,
     {
-      filename,
-      chunkFilename,
+      filename: outputFileName,
+      chunkFilename: outputChunkFileName,
       publicPath: 'auto',
       globalObject: "self",
     }
@@ -29,13 +30,13 @@ export function pitch(workerFilePath: string) {
 
   let callback = this.async();
   compiler.runAsChild((err, entries, compilation) => {
-      callback(
-          null,
-          `
-          const worker = new Worker(__webpack_public_path__ + 'test.worker.js');
-          export default worker;
-          `
-      );
+    callback(
+        null,
+        `
+        const worker = new Worker(__webpack_public_path__ + 'test.worker.js');
+        export default worker;
+        `
+    );
   });
 }
 
