@@ -5,11 +5,11 @@ function calculateHash(value: string): string {
     .split('')
     .reduce((accumulator, char) => (
       accumulator + char.charCodeAt(0)
-    ))
+    ), 0)
     .toString();
 }
 
-export function getOutputFileName(workerFilePath: string): string {
+export function getOutputFilename(workerFilePath: string): string {
   const workerFileName = path.basename(workerFilePath);
   const suffixIndex = workerFileName.search(/\.worker\.([a-z]+)(\?.+)?$/i);
   if ( suffixIndex === -1 ) throw "Invalid file name. Worker file name must follow: *.worker.[js|ts]";
