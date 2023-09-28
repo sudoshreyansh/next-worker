@@ -1,0 +1,41 @@
+.wrapper {
+  margin: 10px 0;
+  display: flex;
+  align-items: baseline;
+  column-gap: 20px;
+}
+
+.content {
+  flex-grow: 1;
+}
+
+.loadingStatus,
+.successStatus,
+.failureStatus {
+  text-transform: uppercase;
+  font-weight: 700;
+  color: grey;
+  display: inline-block;
+  padding: 0.2rem 0.8rem;
+  font-size: .9rem;
+  color: #292929;
+}
+
+.loadingStatus {
+  background-color: #ffbf00;
+}
+
+.successStatus {
+  background-color: #4dff00;
+}
+
+.failureStatus {
+  background-color: #ff3762;
+}
+
+.logs {
+  font-size: .9em;
+  padding: .5em 1em;
+  margin-top: .5em;
+  background-color: rgba(0 0 0 / 5%);
+}

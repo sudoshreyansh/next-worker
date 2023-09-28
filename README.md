@@ -1,8 +1,8 @@
 ## next-worker
 
-Caution: This package is still under development.
-
 Makes it simple to create and manage Web Workers in NextJS. Detects imports to `*.worker.[js|ts]` and manages the hard stuff for you.
+
+Caution: This package is still under development.
 
 Without `next-worker`:
 ```js

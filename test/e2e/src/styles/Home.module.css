@@ -1,0 +1,19 @@
+.main {
+  max-width: 800px;
+  margin: auto;
+  padding: 50px 0;
+}
+
+.heading {
+  font-size: 1.4rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.subheading {
+  text-align: center;
+}
+
+.tests {
+  padding: 50px 0;
+}

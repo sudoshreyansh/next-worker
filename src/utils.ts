@@ -1,23 +1,61 @@
 import path from 'path';
+import qs from 'querystring'
 
-function calculateHash(value: string): string {
-  return value
-    .split('')
-    .reduce((accumulator, char) => (
-      accumulator + char.charCodeAt(0)
-    ), 0)
-    .toString();
+const NextWorkerDisableParamName = 'nextWorkerDisable';
+
+export function escapeBackslash(val: string): string {
+  return val.replace(/\\/g, '\\\\');
 }
 
-export function getOutputFilename(workerFilePath: string): string {
-  const workerFileName = path.basename(workerFilePath);
-  const suffixIndex = workerFileName.search(/\.worker\.([a-z]+)(\?.+)?$/i);
-  if ( suffixIndex === -1 ) throw "Invalid file name. Worker file name must follow: *.worker.[js|ts]";
+export function addLoaderDisableParams(file: string): string {
+  const dirname = path.dirname(file);
+  const basename = path.basename(file);
+  const [filename, querystring] = basename.split('?');
+  let params = {};
 
-  const hash: string = calculateHash(workerFilePath);
-  const prefix = workerFileName.slice(0, suffixIndex);
-  const suffix = workerFileName.slice(suffixIndex);
-  const outputFileName = `${prefix}.${hash}${suffix}`;
+  if ( querystring ) {
+    const existingParams = qs.parse(querystring);
+    params = { ...existingParams };
+  }
 
-  return outputFileName;
+  params[NextWorkerDisableParamName] = 'true';
+
+  const newQuerystring = qs.stringify(params);
+  return path.join(dirname, filename + '?' + newQuerystring);
+}
+
+export function checkForLoaderDisable(file: string): boolean {
+  const basename = path.basename(file);
+  const querystring = basename.split('?')[1];
+  const params = qs.parse(querystring);
+
+  return params[NextWorkerDisableParamName] === 'true';
+}
+
+export function getWorkerChunkFile(file: string) {
+  const dirname = path.dirname(file);
+  const basename = path.basename(file);
+
+  const matches = basename.match(/([a-z0-9-\._]+)\.worker(?:\.([a-z0-9-\._]+))?$/i);
+  if ( !matches || matches.length === 0 )
+    throw "Invalid worker file name. The file name should be of the form \"*.worker.[js|ts]\"";
+
+  const basenamePrefix = matches[1];
+  const basenameSuffix = matches[2] ? '.' + matches[2] : '';
+
+  return path.join(dirname, basenamePrefix + '.worker.chunk' + basenameSuffix);
+}
+
+export function getWorkerSourceFile(chunk: string) {
+  const dirname = path.dirname(chunk);
+  const basename = path.basename(chunk);
+
+  const matches = basename.match(/([a-z0-9-\._]+)\.worker\.chunk(?:\.([a-z0-9-\._]+))?$/i);
+  if ( !matches || matches.length === 0 )
+    throw "Invalid worker chunk. The file name should be of the form \"*.worker.chunk.[js|ts]\"";
+  
+  const basenamePrefix = matches[1];
+  const basenameSuffix = matches[2] ? '.' + matches[2] : '';
+
+  return path.join(dirname, basenamePrefix + '.worker' + basenameSuffix);
 }
