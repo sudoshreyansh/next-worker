@@ -14,7 +14,11 @@ useEffect(() =>  {
 
 With `next-worker`:
 ```js
-import worker from './bg-task.worker.js'
+import { useWorker } from './bg-task.worker.js'
+
+  ...
+  const {isReady, postMessage} = useWorker(e => {});
+  ...
 ```
 
 ## Usage
@@ -22,12 +26,9 @@ import worker from './bg-task.worker.js'
 In your `next.config.json`:
 
 ```javascript
+const { NextWorkerPlugin } = require('next-worker');
+
 module.exports = {
-  webpack: config => {
-    config.module.rules.push({
-      test: /\.worker\.js$/,
-      use: [{ loader: 'next-worker' }]
-    });
-  }
+  webpack: NextWorkerPlugin()
 }
 ```
