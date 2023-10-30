@@ -1,0 +1,17 @@
+name: Testing PRs
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, ready_for_review]
+
+jobs:
+  test-pr:
+    name: Test PR
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '16.x'
+      - run: yarn install
+      - run: yarn build
+      - run: yarn test
