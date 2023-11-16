@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google'
 import styles from '@/styles/Home.module.css'
 import TestRunner from '@/components/TestRunner'
 import SimpleTest from '@/lib/tests/simple'
+import ErrorTest from '@/lib/tests/error'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -24,6 +25,7 @@ export default function Home() {
         </div>
         <div className={styles.tests}>
           <TestRunner component={SimpleTest} title={<div><b>useWorker():</b> Add an array of numbers</div>} />
+          <TestRunner component={ErrorTest} title={<div><b>useWorker():</b> Throw error</div>} />
         </div>
       </main>
     </>

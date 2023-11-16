@@ -64,8 +64,7 @@ function useWorker(factory: WorkerFactory, listener: MessageListener, config: an
     },
 
     postMessage(message: any) {
-      if ( workerRef.current.isReady )
-        workerRef.current.worker.postMessage(message);
+      workerRef.current.worker.postMessage(message);
     }
   };
 }
