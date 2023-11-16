@@ -1,7 +1,14 @@
 export type WorkerFactory = () => Worker;
 
+export enum WorkerStatus {
+  LOADING,
+  READY,
+  ERROR,
+  TERMINATED
+}
+
 export type WorkerState = {
-  isReady: boolean;
+  status: WorkerStatus;
   worker: Worker | undefined;
 }
 

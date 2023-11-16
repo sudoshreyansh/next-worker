@@ -1,4 +1,4 @@
-import { WorkerFactory, WorkerState, MessageListener } from "../types";
+import { WorkerFactory, WorkerState, MessageListener, WorkerStatus } from "../types";
 import { useState, useEffect, useCallback, useRef } from "react";
 
 function spawnWorker(factory: WorkerFactory, listener: MessageListener): Worker {
@@ -14,19 +14,25 @@ function terminateWorker(worker: Worker) {
 
 // TODO: Error handling
 function useWorker(factory: WorkerFactory, listener: MessageListener, config: any) {
-  const [isActive, setIsActive] = useState<boolean>(false);
+  const [_, setIsActive] = useState<boolean>(false);
   const listenerRef = useRef<MessageListener>();
-  const workerRef = useRef<WorkerState>({});
+  const workerRef = useRef<WorkerState>({
+    status: WorkerStatus.LOADING
+  });
   const configRef = useRef<any>({});
 
   listenerRef.current = listener;
   configRef.current = config;
 
   useEffect(() => {
-    workerRef.current = {
-      worker: spawnWorker(factory, e => listenerRef.current(e)),
-      isReady: true
-    };
+    workerRef.current.worker = spawnWorker(factory, e => listenerRef.current(e));
+    workerRef.current.status = WorkerStatus.READY;
+
+    workerRef.current.worker.addEventListener('error', (e: Error) => {
+      // console.log
+      workerRef.current.status = WorkerStatus.ERROR;
+      setIsActive(false);
+    })
     
     if ( configRef.current.onSpawn )
       configRef.current.onSpawn();
@@ -35,7 +41,7 @@ function useWorker(factory: WorkerFactory, listener: MessageListener, config: an
 
     return () => {
       terminateWorker(workerRef.current.worker);
-      workerRef.current.isReady = false;
+      workerRef.current.status = WorkerStatus.TERMINATED;
       
       if ( configRef.current.onTerminate )
         configRef.current.onTerminate();
@@ -45,8 +51,16 @@ function useWorker(factory: WorkerFactory, listener: MessageListener, config: an
   }, []);
 
   return {
+    get isLoading() {
+      return workerRef.current.status === WorkerStatus.LOADING;
+    },
+
+    get isError() {
+      return workerRef.current.status === WorkerStatus.ERROR;
+    },
+    
     get isReady() {
-      return workerRef.current.isReady;
+      return workerRef.current.status === WorkerStatus.READY;
     },
 
     postMessage(message: any) {
