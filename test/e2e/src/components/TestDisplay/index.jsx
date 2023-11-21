@@ -1,25 +1,21 @@
 import styles from '@/styles/Test.module.css'
-
-export const TestStatus = {
-  IN_PROGRESS: 0,
-  SUCCESS: 1,
-  FAILURE: 2
-}
+import { TestStatusLabel } from '@/hooks/useTestProgress';
 
 export default function TestDisplay({ status, title }) {
   let testStatusBox;
+  
   switch ( status.state ) {
-    case TestStatus.IN_PROGRESS:
+    case TestStatusLabel.IN_PROGRESS:
       testStatusBox = <span className={styles.loadingStatus}>RUNS</span>
       break;
-    case TestStatus.SUCCESS:
+    case TestStatusLabel.SUCCESS:
       testStatusBox = <span className={styles.successStatus}>PASS</span>
       break;
-    case TestStatus.FAILURE:
+    case TestStatusLabel.FAILURE:
       testStatusBox = <span className={styles.failureStatus}>FAIL</span>
       break;
   }
-
+ 
   return (
     <div className={styles.wrapper}>
       { testStatusBox }

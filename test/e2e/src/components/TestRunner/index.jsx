@@ -1,33 +1,39 @@
-import { useState } from "react" 
-import TestDisplay, { TestStatus } from "../TestDisplay"
+import { useCallback, useEffect, useRef, useState } from "react" 
+import TestDisplay from "../TestDisplay"
+import { getLoggerInstance } from "@/lib/logger";
+import { useTestProgress } from "@/hooks/useTestProgress";
+import { TestStatus } from "@/hooks/useTestProgress";
 
 export default function TestRunner({
   component: Component,
   title
 }) {
-  const [status, setStatus]  = useState({
-    state: TestStatus.IN_PROGRESS,
-    logs: []
-  });
+  const loggerRef = useRef(getLoggerInstance('default'));
+  const { label, enableTest, success, failure } =  useTestProgress(
+    () => loggerRef.current.log("Test suite started."),
+    () => loggerRef.current.log("Test suite shut down.")
+  );
+  const [logs, setLogs]  = useState([]);
 
-  function setState(state) {
-    setStatus(v => ({
-      ...v,
-      state
-    }));
-  }
+  useEffect(() => {
+    loggerRef.current.addListener(logs => setLogs([...logs]));
+  }, []);
 
-  function logListener(logs) {
-    setStatus(v => ({
-      ...v,
-      logs
-    }));
-  }
-
+  // expect
+  
   return (
     <>
-      <Component setState={setState} logListener={logListener} />
-      <TestDisplay status={status} title={title} />
+      {
+        enableTest ?
+        <Component
+          success={success}
+          failure={failure}
+          logger={loggerRef.current}
+
+        /> :
+        <></>
+      }
+      <TestDisplay status={{ state: label, logs }} title={title} />
     </>
   )
 }
