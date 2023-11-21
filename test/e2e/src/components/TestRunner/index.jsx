@@ -3,6 +3,7 @@ import TestDisplay from "../TestDisplay"
 import { getLoggerInstance } from "@/lib/logger";
 import { useTestProgress } from "@/hooks/useTestProgress";
 import { TestStatus } from "@/hooks/useTestProgress";
+import useExpect from "@/hooks/useExpect";
 
 export default function TestRunner({
   component: Component,
@@ -14,6 +15,7 @@ export default function TestRunner({
     () => loggerRef.current.log("Test suite shut down.")
   );
   const [logs, setLogs]  = useState([]);
+  const { expect, expectDone } = useExpect(success, failure, loggerRef.current);
 
   useEffect(() => {
     loggerRef.current.addListener(logs => setLogs([...logs]));
@@ -26,8 +28,8 @@ export default function TestRunner({
       {
         enableTest ?
         <Component
-          success={success}
-          failure={failure}
+          expect={expect}
+          done={expectDone}
           logger={loggerRef.current}
 
         /> :

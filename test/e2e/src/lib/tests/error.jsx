@@ -1,19 +1,17 @@
 import { useEffect } from 'react';
-import { useWorker } from '../worker/error.worker'
+import { useWorker } from '../worker/error.worker';
+import { debugLogForWorkerMessages, debugLogForWorkerLifecycle } from '../utils/debugLogging';
 
-export default function ErrorTest({ success, failure, logger }) {
-  const {isError} = useWorker(e => {}, {
-    onSpawn: () => {
-      logger.log("Spawned worker.");
-    },
-    onTerminate: () => {
-      logger.log("Terminated worker.");
-    }
-  });
+export default function ErrorTest({ expect, done, logger }) {
+  const {isError} = useWorker(
+    debugLogForWorkerMessages(e => {}, logger),
+    debugLogForWorkerLifecycle(logger)
+  );
 
   useEffect(() => {
     if ( isError ) {
-      success();
+      expect(isError, "Received error object");
+      done();
     }
   }, [isError]);
 
