@@ -1,8 +1,7 @@
-import { useCallback, useEffect, useRef, useState } from "react" 
+import { useEffect, useRef, useState } from "react" 
 import TestDisplay from "../TestDisplay"
 import { getLoggerInstance } from "@/lib/logger";
 import { useTestProgress } from "@/hooks/useTestProgress";
-import { TestStatus } from "@/hooks/useTestProgress";
 import useExpect from "@/hooks/useExpect";
 
 export default function TestRunner({
@@ -20,8 +19,6 @@ export default function TestRunner({
   useEffect(() => {
     loggerRef.current.addListener(logs => setLogs([...logs]));
   }, []);
-
-  // expect
   
   return (
     <>

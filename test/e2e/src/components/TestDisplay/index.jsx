@@ -1,7 +1,9 @@
 import styles from '@/styles/Test.module.css'
 import { TestStatusLabel } from '@/hooks/useTestProgress';
+import { useState } from 'react';
 
 export default function TestDisplay({ status, title }) {
+  const [isCollapsed, setIsCollapsed] = useState(true);
   let testStatusBox;
   
   switch ( status.state ) {
@@ -20,16 +22,20 @@ export default function TestDisplay({ status, title }) {
     <div className={styles.wrapper}>
       { testStatusBox }
       <div className={styles.content}>
-        <div className={styles.heading}>
+        <div className={styles.heading} onClick={() => setIsCollapsed(v => !v)}>
           { title }
         </div>
-        <div className={styles.logs}>
-          {
-            status.logs.map((log, i) => (
-              <div key={i}>{log.source}: {log.message}</div>
-            ))
-          }
-        </div>
+        {
+          isCollapsed ?
+          <></> :
+          <div className={styles.logs}>
+            {
+              status.logs.map((log, i) => (
+                <div key={i}>{log.source}: {log.message}</div>
+              ))
+            }
+          </div>
+        }
       </div>
       
     </div>

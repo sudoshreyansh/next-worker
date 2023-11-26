@@ -4,6 +4,7 @@ import styles from '@/styles/Home.module.css'
 import TestRunner from '@/components/TestRunner'
 import SimpleTest from '@/lib/tests/simple'
 import ErrorTest from '@/lib/tests/error'
+import Error404Test from '@/lib/tests/404'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -25,7 +26,8 @@ export default function Home() {
         </div>
         <div className={styles.tests}>
           <TestRunner component={SimpleTest} title={<div><b>useWorker():</b> Add an array of numbers</div>} />
-          <TestRunner component={ErrorTest} title={<div><b>useWorker():</b> Throw error</div>} />
+          <TestRunner component={ErrorTest} title={<div><b>useWorker():</b> Unhandled error in worker</div>} />
+          <TestRunner component={Error404Test} title={<div><b>useWorker():</b> Worker file doesn't exist</div>} />
         </div>
       </main>
     </>

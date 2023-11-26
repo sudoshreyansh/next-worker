@@ -29,8 +29,11 @@ function useWorker(factory: WorkerFactory, listener: MessageListener, config: an
     workerRef.current.status = WorkerStatus.READY;
 
     workerRef.current.worker.addEventListener('error', (e: Error) => {
-      // console.log
       workerRef.current.status = WorkerStatus.ERROR;
+
+      if ( configRef.current.onError )
+        configRef.current.onError(e);
+
       setIsActive(false);
     })
     
