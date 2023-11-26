@@ -5,6 +5,10 @@
   column-gap: 20px;
 }
 
+.heading {
+  cursor: pointer;
+}
+
 .content {
   flex-grow: 1;
 }

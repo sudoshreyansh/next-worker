@@ -12,7 +12,7 @@
     "eslint": "8.48.0",
     "eslint-config-next": "13.4.19",
     "next": "~13.2.0",
-    "next-worker": "..\\..\\artifacts\\next-worker.tgz",
+    "next-worker": "file:../../artifacts/next-worker.tgz",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-icons": "^4.10.1"
