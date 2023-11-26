@@ -8,16 +8,26 @@ const useWorker = useWorkerFactory(() => {
 
 export default function Error404Test({ expect, done, logger }) {
   const {isError} = useWorker(
-    debugLogForWorkerMessages(e => {}, logger),
-    debugLogForWorkerLifecycle(logger)
+    debugLogForWorkerMessages(() => {}, logger),
+    {
+      ...debugLogForWorkerLifecycle(logger),
+      onError: (err) => {
+        expect.assert(err, "Error callback fired successfully");
+        expect.assertDone();
+      }
+    }
   );
 
   useEffect(() => {
     if ( isError ) {
-      expect(isError, "Received error object");
-      done();
+      expect.assert(isError, "Worker moved to error status successfully");
+      expect.assertDone();
     }
   }, [isError]);
+
+  useEffect(() => {
+    expect.assertCount(2);
+  }, []);
 
   return <></>
 }

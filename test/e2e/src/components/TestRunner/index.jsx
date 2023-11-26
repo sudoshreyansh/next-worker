@@ -14,7 +14,7 @@ export default function TestRunner({
     () => loggerRef.current.log("Test suite shut down.")
   );
   const [logs, setLogs]  = useState([]);
-  const { expect, expectDone } = useExpect(success, failure, loggerRef.current);
+  const expect = useExpect(success, failure, loggerRef.current);
 
   useEffect(() => {
     loggerRef.current.addListener(logs => setLogs([...logs]));
@@ -26,7 +26,6 @@ export default function TestRunner({
         enableTest ?
         <Component
           expect={expect}
-          done={expectDone}
           logger={loggerRef.current}
 
         /> :

@@ -2,14 +2,14 @@ import { useEffect } from 'react';
 import { useWorker } from '../worker/sum.worker';
 import { debugLogForWorkerMessages, debugLogForWorkerLifecycle } from '../utils/debugLogging';
 
-export default function SimpleTest({ expect, done, logger }) {
+export default function SimpleTest({ expect, logger }) {
   const {isReady, postMessage} = useWorker(
     debugLogForWorkerMessages(
       e => {
         logger.log('Received response.');
         
-        expect(e.data === 1e7, "Response correct", "Response incorrect");
-        done();
+        expect.assert(e.data === 1e7, "Response correct", "Response incorrect");
+        expect.assertDone();
       }, logger
     ),
     debugLogForWorkerLifecycle(logger)
