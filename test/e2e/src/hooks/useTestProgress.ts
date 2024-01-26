@@ -1,20 +1,28 @@
+import { emptyFn } from "@/types";
 import { useEffect, useRef, useState } from "react"
 
-export const TestStatusLabel = {
-  IN_PROGRESS: 0,
-  SUCCESS: 1,
-  FAILURE: 2
+export enum TestStatusLabel {
+  IN_PROGRESS,
+  SUCCESS,
+  FAILURE
 }
 
-const TestStatus = {
-  INIT: 0, // to skip dev strict mode re-render of test suite
-  SETUP: 1,
-  IN_PROGRESS: 2,
-  SUCCESS: 3,
-  FAILURE: 4
+export type TestProgressHookResponse = {
+  label: TestStatusLabel,
+  enableTest: boolean,
+  success: emptyFn,
+  failure: emptyFn
 }
 
-function getLabelForStatus(status) {
+enum TestStatus {
+  INIT, // to skip dev strict mode re-render of test suite
+  SETUP,
+  IN_PROGRESS,
+  SUCCESS,
+  FAILURE
+};
+
+function getLabelForStatus(status: TestStatus): TestStatusLabel {
   if ( status < TestStatus.SUCCESS ) {
     return TestStatusLabel.IN_PROGRESS;
   } else if ( status === TestStatus.SUCCESS ) {
@@ -24,10 +32,10 @@ function getLabelForStatus(status) {
   }
 }
 
-export function useTestProgress(setup, cleanup) {
-  const [status, setStatus] = useState(TestStatus.INIT);
-  const setupRef = useRef(setup);
-  const cleanupRef = useRef(cleanup);
+export function useTestProgress(setup: emptyFn, cleanup: emptyFn): TestProgressHookResponse {
+  const [status, setStatus] = useState<TestStatus>(TestStatus.INIT);
+  const setupRef = useRef<emptyFn>(setup);
+  const cleanupRef = useRef<emptyFn>(cleanup);
 
   useEffect(() => {
     setupRef.current = setup;

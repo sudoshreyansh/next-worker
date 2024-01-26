@@ -1,18 +1,31 @@
+export type Log = {
+  message: string;
+  timestamp: number;
+  source: string;
+};
+
+export type LogListenerFn = (logs: Array<Log>) => void;
+
 export default class Logger {
-  constructor(name, isWorker) {
+  private readonly _name: string;
+  private readonly _isWorker: boolean;
+  private _logs: Array<Log>;
+  private _listeners: Array<LogListenerFn>;
+
+  constructor(name: string, isWorker: boolean) {
     this._name = name;
     this._isWorker = isWorker;
     this._logs = [];
     this._listeners = [];
   }
 
-  log(value) {
+  log(value: string | Array<Log> | Log) {
     let logContent;
 
     if ( Array.isArray(value) ) {
       logContent = value;
       this._logs = this._logs.concat(value);
-      this._logs.sort((a, b) => a.timestamp < b.timestamp);
+      this._logs.sort((a, b) => b.timestamp - a.timestamp);
     } else {
       if ( typeof value === 'object' ) {
         logContent = value;
@@ -37,15 +50,15 @@ export default class Logger {
     }
   }
 
-  logs() {
+  logs(): Array<Log> {
     return this._logs;
   }
 
-  addListener(fn) {
+  addListener(fn: LogListenerFn) {
     this._listeners.push(fn);
   }
 
-  listen = (e) => {
+  listen = (e: MessageEvent): boolean => {
     if ( e.data?.type === 'log' ) {
       this.log(e.data.log);
       return true;
@@ -54,11 +67,11 @@ export default class Logger {
     return false;
   }
 
-  clear() {
+  clear(): void {
     this._logs = [];
   }
 }
 
-export function getLoggerInstance(name, isWorker) {
+export function getLoggerInstance(name: string, isWorker?: boolean): Logger {
   return new Logger(name, isWorker ? true : false);
 }

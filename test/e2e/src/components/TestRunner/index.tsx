@@ -1,19 +1,29 @@
 import { useEffect, useRef, useState } from "react" 
 import TestDisplay from "../TestDisplay"
-import { getLoggerInstance } from "@/lib/logger";
+import Logger, { Log, getLoggerInstance } from "@/lib/logger";
 import { useTestProgress } from "@/hooks/useTestProgress";
-import useExpect from "@/hooks/useExpect";
+import useExpect, { ExpectHookResponse } from "@/hooks/useExpect";
+
+export type TestComponentProps = {
+  expect: ExpectHookResponse,
+  logger: Logger
+}
+
+export type TestRunnerProps = {
+  title: string,
+  component: React.FC<TestComponentProps>
+};
 
 export default function TestRunner({
   component: Component,
   title
-}) {
-  const loggerRef = useRef(getLoggerInstance('default'));
+}: TestRunnerProps) {
+  const loggerRef = useRef<Logger>(getLoggerInstance('default'));
   const { label, enableTest, success, failure } =  useTestProgress(
     () => loggerRef.current.log("Test suite started."),
     () => loggerRef.current.log("Test suite shut down.")
   );
-  const [logs, setLogs]  = useState([]);
+  const [logs, setLogs]  = useState<Array<Log>>([]);
   const expect = useExpect(success, failure, loggerRef.current);
 
   useEffect(() => {

@@ -1,13 +1,18 @@
 import { useEffect } from 'react';
-import { useWorker } from '../worker/error.worker';
 import { debugLogForWorkerMessages, debugLogForWorkerLifecycle } from '../utils/debugLogging';
+import { useWorkerFactory } from 'next-worker/build/hooks/useWorker';
+import { TestComponentProps } from '@/components/TestRunner';
 
-export default function ErrorTest({ expect, logger }) {
+const useWorker = useWorkerFactory(() => {
+  return new Worker('/nothing.worker.js');
+});
+
+export default function Error404Test({ expect, logger }: TestComponentProps) {
   const {isError} = useWorker(
-    debugLogForWorkerMessages(e => {}, logger),
+    debugLogForWorkerMessages(() => {}, logger),
     {
       ...debugLogForWorkerLifecycle(logger),
-      onError: (err) => {
+      onError: (err: Error) => {
         expect.assert(err, "Error callback fired successfully");
         expect.assertDone();
       }
@@ -20,7 +25,7 @@ export default function ErrorTest({ expect, logger }) {
       expect.assertDone();
     }
   }, [isError]);
-  
+
   useEffect(() => {
     expect.assertCount(2);
   }, []);

@@ -1,10 +1,21 @@
 import styles from '@/styles/Test.module.css'
 import { TestStatusLabel } from '@/hooks/useTestProgress';
-import { useState } from 'react';
+import { ReactNode, useState } from 'react';
+import { Log } from '@/lib/logger';
 
-export default function TestDisplay({ status, title }) {
-  const [isCollapsed, setIsCollapsed] = useState(true);
-  let testStatusBox;
+type TestStatus = {
+  state: TestStatusLabel,
+  logs: Array<Log>
+}
+
+export type TestDisplayProps = {
+  status: TestStatus,
+  title: string
+}
+
+export default function TestDisplay({ status, title }: TestDisplayProps) {
+  const [isCollapsed, setIsCollapsed] = useState<boolean>(true);
+  let testStatusBox: ReactNode;
   
   switch ( status.state ) {
     case TestStatusLabel.IN_PROGRESS:

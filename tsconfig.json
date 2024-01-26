@@ -4,10 +4,14 @@
     "esModuleInterop": true,
     "module": "CommonJS",
     "moduleResolution": "node",
+    "declaration": true,
     "outDir": "build",
+    "typeRoots": ["./node_modules/@types", "./src/types"]
   },
   "include": [
-    "src/**/*.ts"
+    "src/**/*.ts",
+    "src/**/*.d.ts",
+    "src/types/**/*.d.ts"
   ],
   "exclude": ["node_modules"]
 }
