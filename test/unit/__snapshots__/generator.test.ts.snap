@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`generateRuntime Snapshot testing of generated runtime 1`] = `"export default { 'example1': () => new Worker(new URL('../test/unit/example1.worker.js', import.meta.url)), 'example2': () => new Worker(new URL('../test/unit/hello world/example2.worker.js', import.meta.url)) };"`;
