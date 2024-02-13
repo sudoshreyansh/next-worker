@@ -1,19 +1,9 @@
-import { WorkerFactory, WorkerState, MessageListener, WorkerStatus } from "../types";
-import { useState, useEffect, useCallback, useRef } from "react";
-
-function spawnWorker(factory: WorkerFactory, listener: MessageListener): Worker {
-  const worker = factory();
-  worker.addEventListener('message', listener);
-
-  return worker;
-}
-
-function terminateWorker(worker: Worker) {
-  worker.terminate();
-}
+import { WorkerState, MessageListener, WorkerStatus } from "../types";
+import { useState, useEffect, useRef } from "react";
+import { spawn, terminate } from "../utils/worker";
 
 // TODO: Error handling
-function useWorker(factory: WorkerFactory, listener: MessageListener, config: any) {
+export function useWorker(name: string, listener: MessageListener, config: any) {
   const [_, setIsActive] = useState<boolean>(false);
   const listenerRef = useRef<MessageListener>();
   const workerRef = useRef<WorkerState>({
@@ -25,7 +15,7 @@ function useWorker(factory: WorkerFactory, listener: MessageListener, config: an
   configRef.current = config;
 
   useEffect(() => {
-    workerRef.current.worker = spawnWorker(factory, e => listenerRef.current(e));
+    workerRef.current.worker = spawn(name, e => listenerRef.current(e));
     workerRef.current.status = WorkerStatus.READY;
 
     workerRef.current.worker.addEventListener('error', (e: Error) => {
@@ -43,7 +33,7 @@ function useWorker(factory: WorkerFactory, listener: MessageListener, config: an
     setIsActive(true);
 
     return () => {
-      terminateWorker(workerRef.current.worker);
+      terminate(workerRef.current.worker);
       workerRef.current.status = WorkerStatus.TERMINATED;
       
       if ( configRef.current.onTerminate )
@@ -70,8 +60,4 @@ function useWorker(factory: WorkerFactory, listener: MessageListener, config: an
       workerRef.current.worker.postMessage(message);
     }
   };
-}
-
-export function useWorkerFactory(workerFactory: WorkerFactory) {
-  return (listener: MessageListener, config: any) => useWorker(workerFactory, listener, config)
 }

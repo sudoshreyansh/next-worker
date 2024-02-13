@@ -1,4 +1,7 @@
+rm -r -Force build 2> $null
 yarn build
+cp .\src\worker.runtime.js .\build
+cp -R .\src\loader.js!next-worker\ .\build
 mkdir artifacts > $null
 npm pack --pack-destination .\artifacts\
 cd .\artifacts

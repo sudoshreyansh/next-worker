@@ -1,12 +1,11 @@
-import { generateWorkerRuntime } from './generator';
-import { checkForLoaderDisable } from './utils';
+import { generateRuntime } from './generator';
+import { resolveBySuffix } from './resolvers/suffix';
 
 export default function loader() {};
 
-export function pitch(workerFilePath: string) {
-  const disableStatus = checkForLoaderDisable(workerFilePath);
-  if ( disableStatus ) return;
-
-  return generateWorkerRuntime(workerFilePath);
+export function pitch() {
+  const entries = resolveBySuffix(this.fs, this.rootContext)
+  console.log(generateRuntime(entries));
+  return generateRuntime(entries);
 }
 

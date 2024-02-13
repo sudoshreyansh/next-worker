@@ -1,9 +1,10 @@
 import { useEffect } from 'react';
-import { useWorker } from '../worker/sum.worker';
+import { useWorker } from 'next-worker';
 import { debugLogForWorkerMessages, debugLogForWorkerLifecycle } from '../utils/debugLogging';
 
 export default function SimpleTest({ expect, logger }) {
   const {isReady, postMessage} = useWorker(
+    'sum',
     debugLogForWorkerMessages(
       e => {
         logger.log('Received response.');

@@ -1,3 +1,1 @@
-import plugin from './plugin';
-
-export const NextWorkerPlugin = plugin;
+export { useWorker } from './hooks/useWorker';

@@ -4,6 +4,7 @@ import path from 'path';
 
 describe('resolveBySuffix', () => {
   it('Success resolving workers', async () => {
+    console.log(path.join(__dirname, 'mocks', 'fs'));
     const entries = await resolveBySuffix(fs, path.join(__dirname, 'mocks', 'fs'));
 
     expect(entries.length).toBe(2);

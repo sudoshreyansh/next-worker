@@ -1,9 +1,10 @@
 import { useEffect } from 'react';
-import { useWorker } from '../worker/error.worker';
+import { useWorker } from 'next-worker';
 import { debugLogForWorkerMessages, debugLogForWorkerLifecycle } from '../utils/debugLogging';
 
 export default function ErrorTest({ expect, logger }) {
   const {isError} = useWorker(
+    'error',
     debugLogForWorkerMessages(e => {}, logger),
     {
       ...debugLogForWorkerLifecycle(logger),

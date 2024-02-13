@@ -1,15 +1,15 @@
-import { readdir } from 'fs/promises';
+import { readdirSync } from 'fs';
 import path from 'path';
 import { WorkerEntry } from '../generator';
 
 interface FileSystem {
-  readdir: typeof readdir
+  readdirSync: typeof readdirSync
 }
 
 const candidateParentDirs = ['src', 'app', 'components'];
 
-export async function resolveBySuffix(fs: FileSystem, context: string): Promise<WorkerEntry[]> {
-  const rootEntries = await fs.readdir(context, {
+export function resolveBySuffix(fs: FileSystem, context: string): WorkerEntry[] {
+  const rootEntries = fs.readdirSync(context, {
     withFileTypes: true
   });
 
@@ -19,7 +19,7 @@ export async function resolveBySuffix(fs: FileSystem, context: string): Promise<
     if ( !entry.isDirectory() ) continue;
     if ( !candidateParentDirs.includes(entry.name) ) continue;
 
-    const candidateEntries = await fs.readdir(path.join(entry.path, entry.name), {
+    const candidateEntries = fs.readdirSync(path.join(entry.path, entry.name), {
       withFileTypes: true,
       recursive: true
     });

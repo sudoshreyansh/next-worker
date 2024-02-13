@@ -1,5 +1,3 @@
-export type WorkerFactory = () => Worker;
-
 export enum WorkerStatus {
   LOADING,
   READY,

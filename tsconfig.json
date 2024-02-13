@@ -5,6 +5,8 @@
     "module": "CommonJS",
     "moduleResolution": "node",
     "outDir": "build",
+    "allowJs": true,
+    "declaration": true
   },
   "include": [
     "src/**/*.ts"
